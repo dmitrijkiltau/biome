@@ -257,6 +257,7 @@ fn compute_source_type_from_path_or_extension(
             "astro" => JsFileSource::ts(),
             "vue" => JsFileSource::ts(),
             "svelte" => JsFileSource::ts(),
+            "neosfusion" => JsFileSource::jsx(),
             _ => {
                 return Err(FileSourceError::UnknownExtension(
                     file_name.into(),

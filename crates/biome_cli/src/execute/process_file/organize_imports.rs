@@ -4,7 +4,7 @@ use crate::execute::process_file::{
     DiffKind, FileResult, FileStatus, Message, SharedTraversalOptions,
 };
 use biome_diagnostics::category;
-use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler};
+use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler, NeosFusionFileHandler};
 
 /// Lints a single file and returns a [FileResult]
 pub(crate) fn organize_imports_with_guard<'ctx>(
@@ -31,12 +31,17 @@ pub(crate) fn organize_imports_with_guard<'ctx>(
                 Some("astro") => {
                     output = AstroFileHandler::output(input.as_str(), output.as_str());
                 }
+
                 Some("vue") => {
                     output = VueFileHandler::output(input.as_str(), output.as_str());
                 }
 
                 Some("svelte") => {
                     output = SvelteFileHandler::output(input.as_str(), output.as_str());
+                }
+
+                Some("neosfusion") => {
+                    output = NeosFusionFileHandler::output(input.as_str(), output.as_str());
                 }
                 _ => {}
             }

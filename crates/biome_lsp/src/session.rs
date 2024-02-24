@@ -9,7 +9,7 @@ use biome_console::markup;
 use biome_diagnostics::PrintDescription;
 use biome_fs::{BiomePath, FileSystem};
 use biome_service::configuration::{load_configuration, LoadedConfiguration};
-use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler};
+use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler, NeosFusionFileHandler};
 use biome_service::workspace::{
     FeaturesBuilder, GetFileContentParams, OpenProjectParams, PullDiagnosticsParams,
     SupportsFeatureParams, UpdateProjectParams,
@@ -322,6 +322,7 @@ impl Session {
                 Some("vue") => VueFileHandler::start(content.as_str()),
                 Some("astro") => AstroFileHandler::start(content.as_str()),
                 Some("svelte") => SvelteFileHandler::start(content.as_str()),
+                Some("neosfusion") => NeosFusionFileHandler::start(content.as_str()),
                 _ => None,
             };
 

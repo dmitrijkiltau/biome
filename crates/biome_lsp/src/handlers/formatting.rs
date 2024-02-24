@@ -3,7 +3,7 @@ use crate::diagnostics::LspError;
 use crate::session::Session;
 use anyhow::Context;
 use biome_fs::BiomePath;
-use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler};
+use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler, NeosFusionFileHandler};
 use biome_service::workspace::{
     FeaturesBuilder, FileFeaturesResult, FormatFileParams, FormatOnTypeParams, FormatRangeParams,
     GetFileContentParams, SupportsFeatureParams,
@@ -45,11 +45,17 @@ pub(crate) fn format(
             Some("astro") => {
                 output = AstroFileHandler::output(input.as_str(), output.as_str());
             }
+
             Some("vue") => {
                 output = VueFileHandler::output(input.as_str(), output.as_str());
             }
+
             Some("svelte") => {
                 output = SvelteFileHandler::output(input.as_str(), output.as_str());
+            }
+
+            Some("neosfusion") => {
+                output = NeosFusionFileHandler::output(input.as_str(), output.as_str());
             }
             _ => {}
         }

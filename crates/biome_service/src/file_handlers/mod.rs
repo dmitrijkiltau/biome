@@ -3,8 +3,9 @@ use self::{
     unknown::UnknownFileHandler,
 };
 pub use crate::file_handlers::astro::{AstroFileHandler, ASTRO_FENCE};
-pub use crate::file_handlers::svelte::{SvelteFileHandler, SVELTE_FENCE};
 pub use crate::file_handlers::vue::{VueFileHandler, VUE_FENCE};
+pub use crate::file_handlers::svelte::{SvelteFileHandler, SVELTE_FENCE};
+pub use crate::file_handlers::neosfusion::{NeosFusionFileHandler, NEOSFUSION_FENCE};
 use crate::workspace::{FixFileMode, OrganizeImportsResult};
 use crate::{
     settings::SettingsHandle,
@@ -26,17 +27,18 @@ pub use javascript::JsFormatterSettings;
 use std::ffi::OsStr;
 use std::path::Path;
 
-mod astro;
 mod css;
 mod javascript;
 mod json;
-mod svelte;
-mod unknown;
+mod astro;
 mod vue;
+mod svelte;
+mod neosfusion;
+mod unknown;
 
 /// Supported languages by Biome
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
+#[cfg_attr(feature = "schema", derive(schemas::JsonSchema))]
 pub enum Language {
     /// JavaScript
     JavaScript,
@@ -58,6 +60,8 @@ pub enum Language {
     Vue,
     ///
     Svelte,
+    ///
+    NeosFusion,
     /// Any language that is not supported
     #[default]
     Unknown,
@@ -92,6 +96,7 @@ impl Language {
             "astro" => Language::Astro,
             "vue" => Language::Vue,
             "svelte" => Language::Svelte,
+            "fusion" => Language::NeosFusion,
             "css" => Language::Css,
             _ => Language::Unknown,
         }
@@ -146,6 +151,7 @@ impl Language {
             "astro" => Language::Astro,
             "vue" => Language::Vue,
             "svelte" => Language::Svelte,
+            "fusion" => Language::NeosFusion,
             // TODO: remove this when we are ready to handle CSS files
             "css" => Language::Unknown,
             _ => Language::Unknown,
@@ -211,6 +217,7 @@ impl Language {
             Language::Astro => Some(JsFileSource::ts()),
             Language::Vue => Some(JsFileSource::ts()),
             Language::Svelte => Some(JsFileSource::ts()),
+            Language::NeosFusion => Some(JsFileSource::jsx()),
             Language::Json | Language::Jsonc | Language::Css | Language::Unknown => None,
         }
     }
@@ -228,6 +235,7 @@ impl Language {
             Language::Astro => ASTRO_FENCE.is_match(content),
             Language::Vue => VUE_FENCE.is_match(content),
             Language::Svelte => SVELTE_FENCE.is_match(content),
+            Language::NeosFusion => NEOSFUSION_FENCE.is_match(content),
             Language::Unknown => false,
         }
     }
@@ -246,6 +254,7 @@ impl biome_console::fmt::Display for Language {
             Language::Astro => fmt.write_markup(markup! { "Astro" }),
             Language::Vue => fmt.write_markup(markup! { "Vue" }),
             Language::Svelte => fmt.write_markup(markup! { "Svelte" }),
+            Language::NeosFusion => fmt.write_markup(markup! { "Neos Fusion" }),
             Language::Unknown => fmt.write_markup(markup! { "Unknown" }),
         }
     }
@@ -425,6 +434,7 @@ pub(crate) struct Features {
     astro: AstroFileHandler,
     vue: VueFileHandler,
     svelte: SvelteFileHandler,
+    neosfusion: NeosFusionFileHandler,
     unknown: UnknownFileHandler,
 }
 
@@ -437,6 +447,7 @@ impl Features {
             astro: AstroFileHandler {},
             vue: VueFileHandler {},
             svelte: SvelteFileHandler {},
+            neosfusion: NeosFusionFileHandler {},
             unknown: UnknownFileHandler::default(),
         }
     }
@@ -464,6 +475,7 @@ impl Features {
             Language::Astro => self.astro.capabilities(),
             Language::Vue => self.vue.capabilities(),
             Language::Svelte => self.svelte.capabilities(),
+            Language::NeosFusion => self.neosfusion.capabilities(),
             Language::Unknown => self.unknown.capabilities(),
         }
     }

@@ -5,7 +5,7 @@ use crate::execute::process_file::{
 };
 use crate::execute::TraversalMode;
 use biome_diagnostics::{category, DiagnosticExt};
-use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler};
+use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler, NeosFusionFileHandler};
 use biome_service::workspace::RuleCategories;
 use std::path::Path;
 use std::sync::atomic::Ordering;
@@ -72,12 +72,17 @@ pub(crate) fn format_with_guard<'ctx>(
                 Some("astro") => {
                     output = AstroFileHandler::output(input.as_str(), output.as_str());
                 }
+
                 Some("vue") => {
                     output = VueFileHandler::output(input.as_str(), output.as_str());
                 }
 
                 Some("svelte") => {
                     output = SvelteFileHandler::output(input.as_str(), output.as_str());
+                }
+
+                Some("neosfusion") => {
+                    output = NeosFusionFileHandler::output(input.as_str(), output.as_str());
                 }
                 _ => {}
             }

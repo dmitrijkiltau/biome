@@ -7,7 +7,7 @@ use biome_analyze::{ActionCategory, SourceActionKind};
 use biome_diagnostics::Applicability;
 use biome_fs::BiomePath;
 use biome_rowan::{TextRange, TextSize};
-use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler};
+use biome_service::file_handlers::{AstroFileHandler, SvelteFileHandler, VueFileHandler, NeosFusionFileHandler};
 use biome_service::workspace::{
     FeatureName, FeaturesBuilder, FixFileMode, FixFileParams, GetFileContentParams,
     PullActionsParams, SupportsFeatureParams,
@@ -83,6 +83,7 @@ pub(crate) fn code_actions(
         Some("vue") => VueFileHandler::start(content.as_str()),
         Some("astro") => AstroFileHandler::start(content.as_str()),
         Some("svelte") => SvelteFileHandler::start(content.as_str()),
+        Some("neosfusion") => NeosFusionFileHandler::start(content.as_str()),
         _ => None,
     };
     let cursor_range = from_proto::text_range(&doc.line_index, params.range, position_encoding)
