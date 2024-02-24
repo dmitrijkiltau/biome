@@ -38,7 +38,7 @@ mod unknown;
 
 /// Supported languages by Biome
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Default, serde::Serialize, serde::Deserialize)]
-#[cfg_attr(feature = "schema", derive(schemas::JsonSchema))]
+#[cfg_attr(feature = "schema", derive(schemars::JsonSchema))]
 pub enum Language {
     /// JavaScript
     JavaScript,
